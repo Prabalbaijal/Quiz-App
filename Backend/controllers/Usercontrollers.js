@@ -73,7 +73,7 @@ export const login=async (req,res)=>{
                                 (error,token)=>{
                                     res.json({
                                         user,
-                                        token:"Token: "+token,
+                                        token:"Bearer Token: "+token,
                                         success:true
                                     })
                                 }
