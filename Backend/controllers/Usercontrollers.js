@@ -1,89 +1,94 @@
 import { User } from '../models/Usermodel.js'
 import bcrypt from 'bcryptjs'
-import { signupValidator,loginValidator } from "../validators/validators.js"
+import validator from "validator"
 import jwt from "jsonwebtoken"
 
 export const register=async(req,res)=>{
     try{
-        const {errors,isValid}=signupValidator(req.body)
-        if(!isValid){
-            res.json({
-                success:false,
-                errors
-            })
-        }else{
-            const {firstName,lastName,email,password}=req.body
-            const hashedpass = await bcrypt.hash(password, 10)
-            const registerUser=new User({
-                firstName,
-                lastName,
-                email,
-                password:hashedpass,
-                createdAt:new Date()
-            })
-            registerUser.save().then(()=>{
-                res.json({
-                    message:"Account created Successfully.",
-                    success:true
-                })
-            }).catch(error=>res.json({
-                message:error.message,
-                success:false
-            }))
+        const { firstName,lastName, email, password, confirmPassword } = req.body
+        if (!firstName ||!lastName || !email || !password || !confirmPassword) {
+            return res.status(400).json({ message: "All fields are requied!!" })
         }
+        if (password !== confirmPassword) {
+            return res.status(400).json({ message: "Passwords do not match" })
+        }
+        if(!validator.isEmail(email)){
+            return res.status(400).json({ message: "Please fill a valid email" })
+        }
+        const user1 = await User.findOne({
+            email
+        })
+        if (user1) {
+            return res.status(400).json({ message: "Username already exists !!Try different" })
+        }
+        const hashedpass = await bcrypt.hash(password, 10)
+        
+        const user = await User.create({
+            firstName,
+            lastName,
+            email,
+            password: hashedpass,
+            createdAt:new Date()
+        })
+        const createdUser = await User.findById(user._id).select(
+            "-password"
+        )
+        if (!createdUser) {
+            return res.status(500).json({
+                message: "Something went wrong while registering the user!!"
+            })
+        }
+        return res.status(201).json({
+            message: "Account created successfully.",
+            success: true,
+            user: createdUser
+        })
     }catch(error){
-        console.log(error)
+        return res.status(500).json({
+            message:'Server Error',
+            success:false
+        })
     }
 }
-
-export const login=async (req,res)=>{
+export const login=async(req,res)=>{
     try{
-        const {errors,isValid}=loginValidator(req.body)
-        if(!isValid){
-            res.json({
-                success:false,
-                errors
-            })
-        }else{
-            User.findOne({
-                email:req.body.email
-            }).then(user=>{
-                if(!user){
-                    res.json({
-                    message:"User does not exist!!",
-                    success:false
-                })
-                }
-                else{
-                    bcrypt.compare(req.body.password,user.password).then(success=>{
-                        if(!success){
-                            res.json({
-                                message:"Incorrect Password",
-                                success:false
-                            })
-                        }
-                        else{
-                            const payload={
-                                id:user._id,
-                                name:user.firstName
-                            }
-                            jwt.sign(
-                                payload,
-                                process.env.JWT_SECRET,{expiresIn:2155926},
-                                (error,token)=>{
-                                    res.json({
-                                        user,
-                                        token:"Bearer Token: "+token,
-                                        success:true
-                                    })
-                                }
-                            )
-                        }
-                    })
-                }
+        const {email,password}=req.body
+        if (!email || !password){
+            return res.status(400).json({ message: "Please fill all the required fields." })
+        }
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(400).json({
+                message: "Invalid user!!",
+                success: false
             })
         }
+        const MatchPassword = await bcrypt.compare(password, user.password)
+        if (!MatchPassword) {
+            return res.status(400).json({
+                message: "Incorrect Password!!",
+                success: false
+            })
+        }
+        const tokenData = {
+            userId: user._id
+        }
+        const token = await jwt.sign(tokenData, process.env.JWT_SECRET, {
+            expiresIn: '1d'
+        })
+
+        return res.status(200).cookie("token", token, {
+            maxAge: 1 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: 'strict'
+        })
+            .json({
+                user,
+                token:"Bearer Token: "+token,
+                success:true
+            })
+
     }catch(error){
-        console.log(error)
+
     }
 }
