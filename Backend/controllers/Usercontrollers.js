@@ -83,7 +83,10 @@ export const login=async(req,res)=>{
             sameSite: 'strict'
         })
             .json({
-                user,
+                _id: user._id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName:user.lastName,
                 token:"Bearer Token: "+token,
                 success:true
             })
