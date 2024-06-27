@@ -1,26 +1,24 @@
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken"
+import { User } from "../models/Usermodel.js"
 
 const isAuthenticated=async(req,res,next)=>{
-    try{
-        let token=req.headers['authorization'].split(' ')[2]
+    try{    
+        const token=req.cookies.token || req.header("Authorization")?.replace("Bearer ","")
         if(!token){
-            return res. status(401).json({
+            return res.status(401).json({
                 message:"User authentication failed!!"
             })
         }
         const decode=await jwt.verify(token,process.env.JWT_SECRET)
-        if(!decode){
+        const user=await User.findById(decode?.userId).select("-password")
+        if(!user){
             return res.status(401).json({message:"Invalid Token!!"})
         }
-        req.userData=decode
-        next()  
-
+        req.user=user
+        next()
     }
     catch(error){
-        return res.status(401).json({
-            "message":"Not Authorized"
-        })
+        console.log(error)
     }
 }
-
 export default isAuthenticated

@@ -2,7 +2,7 @@ import { User } from '../models/Usermodel.js'
 import bcrypt from 'bcryptjs'
 import validator from "validator"
 import jwt from "jsonwebtoken"
-
+import { Quiz } from '../models/QuizModel.js'
 export const register=async(req,res)=>{
     try{
         const { firstName,lastName, email, password, confirmPassword } = req.body
@@ -87,11 +87,37 @@ export const login=async(req,res)=>{
                 email: user.email,
                 firstName: user.firstName,
                 lastName:user.lastName,
-                token:"Bearer Token: "+token,
                 success:true
             })
 
     }catch(error){
+        console.log(error)
+    }
+}
 
+export const createQuiz=async (req, res) => {
+    const { title, category, questions } = req.body;
+  
+    const quiz = new Quiz({
+      title,
+      category,
+      questions,
+    });
+
+    try {
+      await quiz.save();
+      res.status(201).send('Quiz added');
+    } catch (error) {
+      res.status(500).send('Error adding quiz');
+    }
+  }
+
+export const logout = async (req, res) => {
+    try {
+        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+            message: "Logged Out Successfully."
+        })
+    } catch (error) {
+        console.error(error)
     }
 }
