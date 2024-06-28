@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import Sidebar from './Sidebar';
 
 function CreateQuiz() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
-  const [showForm, setShowForm] = useState(false);
   const [question, setQuestion] = useState('');
   const [choices, setChoices] = useState(['', '', '', '']);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [quiz, setQuiz] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const categories = ['Math', 'Science', 'Technology', 'Sports', 'History'];
 
@@ -17,7 +19,7 @@ function CreateQuiz() {
     const newQuestion = {
       question,
       choices,
-      correctAnswer: choices[correctAnswer]
+      correctAnswer: correctAnswer
     };
 
     setQuestions([
@@ -33,6 +35,7 @@ function CreateQuiz() {
   };
 
   const handleSaveQuiz = async () => {
+    setIsDisabled(true)
     const newQuiz = {
       title,
       category,
@@ -53,7 +56,8 @@ function CreateQuiz() {
       setCategory('');
       setQuestions([]);
     } catch (error) {
-      console.error('Error adding quiz', error);
+      toast.error(error.response.data.message)
+      console.log(error)
     }
   };
 
@@ -68,114 +72,122 @@ function CreateQuiz() {
   };
 
   return (
+    <div className='flex'>
+    <Sidebar/>
     <div className="App">
-      <h1>Create Quiz</h1>
-      
-      <div>
-        <label>
-          Quiz Title:
-          <input
-            className='w-full max-w-xs bg-white input input-bordered'
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
-      </div>
+      <div className='flex-col w-[75vw] items-center text-center mt-10'>
+        <div className=''><h1 className='text-4xl'>Create Quiz</h1></div>
+        <div className='flex items-center justify-around pt-6'>
 
-      <div>
-        <label>
-          Category:
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className='bg-white'>
-            <option value="">Select Category</option>
-            {categories.map((cat, index) => (
-              <option key={index} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <button onClick={() => setShowForm(true)}>Add Question</button>
-
-      {showForm && (
-        <div>
           <div>
-            <label>
-              Question:
-              <input
-              className='w-full max-w-xs bg-white input input-bordered'
-                type="text"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-              />
+            <label className="flex items-center gap-2 bg-white input input-bordered">
+              Quiz Title:
+              <input type="text" className="grow" placeholder="Enter Quiz Title" onChange={(e) => setTitle(e.target.value)} />
             </label>
           </div>
-
           <div>
-            <label>Choices:</label>
-            {choices.map((choice, index) => (
-              <div key={index}>
-                <input
-                className='w-full max-w-xs bg-white input input-bordered'
-                  type="text"
-                  value={choice}
-                  onChange={(e) => handleChoiceChange(index, e.target.value)}
-                />
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={correctAnswer === index}
-                    onChange={() => handleCorrectAnswerChange(index)}
-                  />
-                  Correct Answer
-                </label>
-              </div>
-            ))}
+            <label className="flex items-center gap-2 bg-white">
+              Category:
+              <select value={category} onChange={(e) => setCategory(e.target.value)} className='w-full bg-white select-bordered select'>
+                <option value="">Select Category</option>
+                {categories.map((cat, index) => (
+                  <option key={index} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </label>
           </div>
-
-          <button onClick={handleAddQuestion}>Save Question</button>
         </div>
+        {/* onClick={() => setShowForm(true)} */}
+        <button className='mt-4 btn btn-active' disabled={isDisabled} onClick={() => document.getElementById('my_modal_3').showModal()}>Add Question</button>
+      </div>
+      {(
+        <dialog id="my_modal_3" className="modal">
+          <div className='bg-white modal-box'>
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="absolute btn btn-sm btn-circle btn-ghost right-2 top-2">✕</button>
+            </form>
+            <div className='mt-4'>
+              <label className="flex items-center gap-2 text-lg bg-white border-black input input-bordered">
+                Question:
+                <input
+                  placeholder='Type Question Here'
+                  type="text"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                />
+              </label>
+            </div>
+
+            <div className='flex-col items-center mt-2'>
+              <label className='text-lg'>Choices:</label>
+              {choices.map((choice, index) => (
+                <div key={index} className=''>
+                  <label>
+                    <input
+                    className='checkbox checkbox-success'
+                      type="checkbox"
+                      checked={correctAnswer === index}
+                      onChange={() => handleCorrectAnswerChange(index)}
+                    />
+                  </label>
+                  <input
+                    className='max-w-xs mt-2 ml-3 bg-white border-black input input-bordered'
+                    type="text"
+                    placeholder={`Option ${index+1}`}
+                    value={choice}
+                    onChange={(e) => handleChoiceChange(index, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className='flex justify-end'>
+            <button onClick={handleAddQuestion} className='mt-4 btn btn-active'>Save Question</button>
+            </div>
+          </div>
+        </dialog>
       )}
 
       {questions.length > 0 && (
-        <div>
-          <h2>Questions</h2>
+        <div className='flex flex-col ml-4'>
+          <h2 className='mb-4 text-2xl'>Questions</h2>
           <ul>
             {questions.map((q, index) => (
               <li key={index}>
-                <p>{q.question}</p>
+                <span className='w-auto p-1 mb-1 font-bold bg-gray-300 rounded-lg'>Question: {q.question}</span>
                 <ul>
                   {q.choices.map((choice, i) => (
-                    <li key={i}>{choice}</li>
+                    <li key={i}>Option {i+1}: {choice}</li>
                   ))}
                 </ul>
-                <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
+                <p><strong>Correct Answer:</strong> Option {q.correctAnswer}</p>
               </li>
             ))}
           </ul>
-          <button onClick={handleSaveQuiz}>Save Quiz</button>
+          <div className='flex justify-center mb-4'><button onClick={handleSaveQuiz} className=' btn btn-active'>Save Quiz</button></div>
         </div>
       )}
 
       {quiz && (
-        <div>
-          <h2>Saved Quiz</h2>
-          <h3>{quiz.title} - {quiz.category}</h3>
+        <div className='flex flex-col ml-4'>
+          <span className='text-lg bg-gray-300 w-[7vw] pl-2 mb-4 rounded-md'>Saved Quiz</span>
+          <h3 className='flex justify-around mb-4 text-lg'><div>Quiz Title: {quiz.title}</div>  <div>Category: {quiz.category}</div></h3>
           <ul>
             {quiz.questions.map((q, index) => (
               <li key={index}>
-                <p>{q.question}</p>
+                <span className='w-auto p-1 mb-1 font-bold bg-gray-300 rounded-lg'>Question {index+1}: {q.question}</span>
                 <ul>
                   {q.choices.map((choice, i) => (
-                    <li key={i}>{choice}</li>
+                    <li key={i}>Option {i+1}: {choice}</li>
                   ))}
                 </ul>
-                <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
+                <p><strong>Correct Answer:</strong> Option {q.correctAnswer}</p>
               </li>
             ))}
           </ul>
         </div>
       )}
+    </div>
     </div>
   );
 }

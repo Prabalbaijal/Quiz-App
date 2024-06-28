@@ -4,6 +4,7 @@ import Signup from './Components/Signup.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom'
 import './index.css'
 import Dashboard from './Components/Dashboard.jsx'
+import CreateQuiz from './Components/CreateQuiz.jsx'
 
 const router=createBrowserRouter([
   {
@@ -13,6 +14,11 @@ const router=createBrowserRouter([
   {
       path:"/dashboard",
       element:<Dashboard/>
+  }
+  ,
+  {
+    path:"create-quiz",
+    element:<CreateQuiz/>
   }
 ])
 

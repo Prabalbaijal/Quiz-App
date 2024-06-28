@@ -3,7 +3,7 @@ import { User } from "../models/Usermodel.js"
 
 const isAuthenticated=async(req,res,next)=>{
     try{    
-        const token=req.cookies.token || req.header("Authorization")?.replace("Bearer ","")
+        const token=req.cookies.token
         if(!token){
             return res.status(401).json({
                 message:"User authentication failed!!"

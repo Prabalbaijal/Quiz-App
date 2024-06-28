@@ -6,7 +6,6 @@ function Dashboard() {
   return (
     <div className='flex'>
       <Sidebar/>
-      <CreateQuiz/>
     </div>
   )
 }
