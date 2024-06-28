@@ -96,7 +96,7 @@ export const login=async(req,res)=>{
 }
 
 export const createQuiz=async (req, res) => {
-    const { title, category, questions } = req.body;
+    const { title, category, questions,createdBy } = req.body;
     if(!title|| !category ||!questions){
         return res.status(400).json({ message: "Please fill all the required fields." })
     }
@@ -104,6 +104,7 @@ export const createQuiz=async (req, res) => {
       title,
       category,
       questions,
+      createdBy
     });
 
     try {

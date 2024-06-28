@@ -37,7 +37,7 @@ const UserSchema=new mongoose.Schema({
     deleted:{
         type:Boolean,
         default:false
-    }
+    },
 })
 
-export const User=mongoose.model("Users",UserSchema)
+export const User=mongoose.model("User",UserSchema)

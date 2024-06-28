@@ -21,7 +21,7 @@ function Sidebar() {
             <div><hr className='w-[25vw]'></hr></div>
             <div className='h-10 pt-4 text-lg'><Link to="/create-quiz">Create a Quiz</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
-            <div className='h-10 pt-4 text-lg'>My Quizzes</div>
+            <div className='h-10 pt-4 text-lg'><Link to="/quizzes">View all Quizzes</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
             
             
