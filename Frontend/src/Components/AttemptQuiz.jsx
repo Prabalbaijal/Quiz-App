@@ -67,6 +67,7 @@ function Quiz() {
         withCredentials: true
       });
       // Navigate to the result page with the result ID
+      console.log(response)
       navigate(`/result/${response.data.resultId}`);
     } catch (error) {
       console.error("Error submitting quiz:", error);

@@ -1,5 +1,6 @@
 import { Quiz } from "../models/QuizModel.js";
-
+import { User } from "../models/Usermodel.js";
+import mongoose from "mongoose";
 export const getquizzes=async (req, res) => {
     try {
       const quizzes = await Quiz.find().populate('createdBy', 'firstName lastName'); // Assuming 'createdBy' is a reference to the User model
@@ -22,7 +23,7 @@ export const getquestions=async (req, res) => {
   }
 }
 
-export const submitquiz=async (req, res) => {
+export const submitquiz = async (req, res) => {
   const { quizId } = req.params;
   const { answers } = req.body;
 
@@ -48,8 +49,7 @@ export const submitquiz=async (req, res) => {
       }
     }
 
-    // Save performance data to user or any other relevant collection
-    // For example, if you have a User model with quizzesTaken array
+    // Save performance data to the user
     const userId = req.user.id; // Assuming you have authentication middleware
     const performance = {
       quizId: quiz._id,
@@ -59,15 +59,21 @@ export const submitquiz=async (req, res) => {
       dateTaken: new Date()
     };
 
-    // Assuming User model with quizzesTaken array
-    await User.findByIdAndUpdate(userId, { $push: { quizzesTaken: performance } });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $push: { quizzesTaken: performance } },
+      { new: true, upsert: true }
+    );
 
-    res.status(200).json({ resultId: performance._id }); // Send back result ID or any other relevant data
+    // Retrieve the last inserted performance record's ID
+    const resultId = user.quizzesTaken[user.quizzesTaken.length - 1]._id;
+
+    res.status(200).json({ resultId });
   } catch (error) {
     console.error("Error submitting quiz:", error);
     res.status(500).json({ error: 'Something went wrong' });
   }
-}
+};
 
 export const getresults=async (req, res) => {
   try {
@@ -75,8 +81,9 @@ export const getresults=async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Result not found' });
     }
-    res.json(user.quizzesTaken[0]);
+    res.json(user.quizzesTaken.id(req.params.resultId));
   } catch (error) {
     res.status(500).json({ message: 'Error fetching result' });
   }
-}
+} 
+

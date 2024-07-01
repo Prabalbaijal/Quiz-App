@@ -17,6 +17,7 @@ function Result() {
           },
           withCredentials: true
         });
+        console.log(response)
         setResult(response.data);
         toast.dismiss(loadingToastId);
       } catch (error) {
