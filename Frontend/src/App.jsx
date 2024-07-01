@@ -6,6 +6,8 @@ import './index.css'
 import Dashboard from './Components/Dashboard.jsx'
 import CreateQuiz from './Components/CreateQuiz.jsx'
 import GetQuizzes from './Components/GetQuizzes.jsx'
+import Quiz from './Components/AttemptQuiz.jsx'
+import Result from './Components/Result.jsx'
 
 const router=createBrowserRouter([
   {
@@ -18,13 +20,22 @@ const router=createBrowserRouter([
   }
   ,
   {
-    path:"create-quiz",
+    path:"/create-quiz",
     element:<CreateQuiz/>
   },
   {
-    path:"quizzes",
+    path:"/quizzes",
     element:<GetQuizzes/>
+  },
+  {
+    path:"/quiz/:quizId",
+    element:<Quiz/>
+  },
+  {
+    path:"/result/:resultId",
+    element:<Result/>
   }
+
 ])
 
 function App() {

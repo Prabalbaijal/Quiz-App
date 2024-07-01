@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
-function GetQuizzes({ triggerFetch }) {
+function GetQuizzes() {
   const [quizzes, setQuizzes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchQuizzes = async () => {
-    setIsLoading(true);
+    const loadingToastId = toast.loading('Loading quizzes...');
     try {
       const response = await axios.get('http://localhost:9000/api/users/quizzes', {
         headers: {
@@ -18,26 +18,25 @@ function GetQuizzes({ triggerFetch }) {
         withCredentials: true
       });
       setQuizzes(response.data);
-      setIsLoading(false);
+      toast.dismiss(loadingToastId);
     } catch (error) {
       console.error("Error fetching quizzes:", error);
       toast.error("Something went wrong!");
-      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchQuizzes();
-  }, [triggerFetch]);
+  }, []);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const startQuiz = (quizId) => {
+    navigate(`/quiz/${quizId}`);
+  };
 
   return (
-    <div className='flex'>
+    <div className='flex h-screen'>
       <Sidebar />
-      <div className='w-[75vw] p-4'>
+      <div className='w-[75vw] p-4 overflow-auto'>
         <h1 className='mb-6 text-4xl'>All Quizzes</h1>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
           {quizzes.map((quiz) => (
@@ -45,7 +44,7 @@ function GetQuizzes({ triggerFetch }) {
               <h2 className='mb-2 text-2xl'>{quiz.title}</h2>
               <p className='mb-1 text-lg'><strong>Category:</strong> {quiz.category}</p>
               <p className='mb-1 text-lg'><strong>Created By:</strong> {quiz.createdBy.firstName} {quiz.createdBy.lastName}</p>
-              <button className='mt-2 btn btn-active'>Start Quiz</button>
+              <button className='mt-2 btn btn-active' onClick={() => startQuiz(quiz._id)}>Start Quiz</button>
             </div>
           ))}
         </div>

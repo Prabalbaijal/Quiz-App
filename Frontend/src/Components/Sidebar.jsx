@@ -6,7 +6,7 @@ function Sidebar() {
     const { loggedinUser } = useSelector(store => store.user)
     const navigate=useNavigate()
     return (
-        <div className='gap-0 flex flex-col w-[25vw] bg-gray-300 h-screen items-center border-4 '>
+        <div className='gap-0 flex flex-col w-[25vw] bg-gray-300 h-screen items-center border-4'>
             <div className='flex flex-col items-center w-full bg-gray-300'>
                     <div className="mt-32 avatar">
                         <div className="w-24 rounded-full">

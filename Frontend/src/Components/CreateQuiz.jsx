@@ -126,6 +126,7 @@
                 <label className="flex items-center gap-2 text-lg bg-white border-black input input-bordered">
                   Question:
                   <input
+                    className='w-full'
                     placeholder='Type Question Here'
                     type="text"
                     value={question}
@@ -196,7 +197,7 @@
                       <li key={i}>Option {i+1}: {choice}</li>
                     ))}
                   </ul>
-                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer}</p>
+                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer+1}</p>
                 </li>
               ))}
             </ul>
