@@ -124,3 +124,31 @@ export const logout = async (req, res) => {
         console.error(error)
     }
 }
+
+export const dashboard= async (req, res) => {
+    try {
+      const userId = req.user.id; // Assuming user ID is available through authentication middleware
+  
+      // Fetch user data including quizzes taken
+      const user = await User.findById(userId).populate('quizzesTaken.quizId');
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Extract relevant data for dashboard
+      const quizzesTaken = user.quizzesTaken.map((quiz) => ({
+        quizId: quiz.quizId._id,
+        quizTitle: quiz.quizId.title, // Assuming quizId has a 'title' field
+        score: quiz.score,
+        correctAnswers: quiz.correctAnswers,
+        totalQuestions: quiz.totalQuestions,
+        dateTaken: quiz.dateTaken,
+      }));
+  
+      res.json({ quizzesTaken });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }

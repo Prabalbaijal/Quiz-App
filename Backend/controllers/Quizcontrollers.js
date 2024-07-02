@@ -48,8 +48,7 @@ export const submitquiz = async (req, res) => {
       }
     }
 
-    // Save performance data to the user
-    const userId = req.user.id; // Assuming you have authentication middleware
+    const userId = req.user.id; 
     const performance = {
       quizId: quiz._id,
       score:(correctAnswers/totalQuestions*100),

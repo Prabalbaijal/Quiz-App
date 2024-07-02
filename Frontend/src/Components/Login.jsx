@@ -59,7 +59,6 @@ function Login() {
         },
         withCredentials: true
       })
-      console.log(res)
       if (res.data.success) {
         navigate("/dashboard")
         dispatch(setLoggedinUser(res.data))

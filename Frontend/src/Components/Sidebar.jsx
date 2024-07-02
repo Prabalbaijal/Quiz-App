@@ -1,10 +1,24 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {useNavigate,Link} from 'react-router-dom'
+import { setLoggedinUser } from '../redux/userSlice'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 function Sidebar() {
     const { loggedinUser } = useSelector(store => store.user)
     const navigate=useNavigate()
+    const dispatch=useDispatch()
+    const logoutFunction = async () => {
+        try {
+          const res = await axios.get('http://localhost:9000/api/users/logout')
+          navigate("/")
+          toast.success(res.data.message)
+          dispatch(setLoggedinUser(null))
+        } catch (error){
+          console.log(error)
+        }
+      }
     return (
         <div className='gap-0 flex flex-col w-[25vw] bg-gray-300 h-screen items-center border-4'>
             <div className='flex flex-col items-center w-full bg-gray-300'>
@@ -23,7 +37,8 @@ function Sidebar() {
             <div><hr className='w-[25vw]'></hr></div>
             <div className='h-10 pt-4 text-lg'><Link to="/quizzes">View all Quizzes</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
-            
+            <div className='h-10 pt-4 text-lg' onClick={logoutFunction}>Logout</div>
+            <div><hr className='w-[25vw]'></hr></div>
             
         </div>
     )
