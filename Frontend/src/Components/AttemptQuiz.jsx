@@ -20,8 +20,8 @@ function Quiz() {
           },
           withCredentials: true
         });
-        console.log(response)
-        setQuestions(response.data); 
+        console.log(response);
+        setQuestions(response.data);
 
         toast.dismiss(loadingToastId);
       } catch (error) {
@@ -36,20 +36,22 @@ function Quiz() {
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  // Ensure currentQuestion and currentQuestion.options are not undefined
+  // Ensure currentQuestion and currentQuestion.choices are not undefined
   if (!currentQuestion || !currentQuestion.choices) {
     return <div>No questions available.</div>;
   }
 
-  const handleAnswer = (questionId, answer) => {
+  const handleAnswer = (questionIndex, optionIndex) => {
     setAnswers({
       ...answers,
-      [questionId]: answer
+      [questionIndex]: optionIndex // Store the index
     });
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
+    if (answers[currentQuestionIndex] === undefined) {
+      toast.error("Please mark the answer.");
+    } else if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       finishQuiz();
@@ -67,7 +69,7 @@ function Quiz() {
         withCredentials: true
       });
       // Navigate to the result page with the result ID
-      console.log(response)
+      console.log(response);
       navigate(`/result/${response.data.resultId}`);
     } catch (error) {
       console.error("Error submitting quiz:", error);
@@ -76,28 +78,35 @@ function Quiz() {
   };
 
   return (
-    <div className='quiz-container'>
-      <h1 className='mb-6 text-4xl'>{currentQuestion.question}</h1>
-      {/* <p className='mb-1 text-lg'>{currentQuestion.text}</p> */}
-      <div className='mb-4'>
-        {currentQuestion.choices.map((option, index) => (
-          <div key={index}>
-            <label>
-              <input
-                type='radio'
-                name={`question-${currentQuestionIndex}`}
-                value={option}
-                checked={answers[currentQuestionIndex] === index}
-                onChange={() => handleAnswer(currentQuestionIndex, option)}
-              />
-              {option}
-            </label>
-          </div>
-        ))}
+    <div className='flex items-center justify-center h-screen'>
+      <div className='z-20 p-8 m-auto bg-gray-300 shadow-xl rounded-xl'>
+        <h1 className='mb-6 text-4xl'>Ques.{currentQuestionIndex + 1} {currentQuestion.question}</h1>
+        {/* <p className='mb-1 text-lg'>{currentQuestion.text}</p> */}
+        <div className='mb-4'>
+          {currentQuestion.choices.map((option, index) => (
+            <div key={index}>
+              <label className='flex items-start p-2 '>
+                <input
+                  type='radio' // Changed from checkbox to radio
+                  name={`question-${currentQuestionIndex}`}
+                  value={option}
+                  checked={answers[currentQuestionIndex] === index}
+                  onChange={() => handleAnswer(currentQuestionIndex, index)}
+                  className='radio-success radio' // Changed from checkbox to radio
+                />
+                {option}
+              </label>
+            </div>
+          ))}
+        </div>
+        <button
+          className='mt-2 text-white btn btn-active'
+          onClick={handleNext}
+          disabled={answers[currentQuestionIndex] === undefined} // Disable if no answer selected
+        >
+          {currentQuestionIndex < questions.length - 1 ? 'Next' : 'Finish'}
+        </button>
       </div>
-      <button className='mt-2 btn btn-active' onClick={handleNext}>
-        {currentQuestionIndex < questions.length - 1 ? 'Next' : 'Finish'}
-      </button>
     </div>
   );
 }

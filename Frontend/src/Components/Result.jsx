@@ -37,7 +37,7 @@ function Result() {
     <div className='result-container'>
       <h1 className='mb-6 text-4xl'>Quiz Result</h1>
       <p className='mb-4 text-lg'>Quiz Title: {result.quizId.title}</p>
-      <p className='mb-4 text-lg'>Score: {result.score} / {result.totalQuestions}</p>
+      <p className='mb-4 text-lg'>Score: {result.score}%</p>
       <p className='mb-4 text-lg'>Correct Answers: {result.correctAnswers}</p>
       <p className='mb-4 text-lg'>Date Taken: {new Date(result.dateTaken).toLocaleString()}</p>
       <Link to="/quizzes" className='mt-4 btn btn-active'>Back to Quizzes</Link>

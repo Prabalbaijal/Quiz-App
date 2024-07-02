@@ -33,7 +33,7 @@ export const submitquiz = async (req, res) => {
     if (!quiz) {
       return res.status(404).json({ error: 'Quiz not found' });
     }
-
+    const answersArray=Object.values(answers)
     // Calculate score and correct answers
     let score = 0;
     let correctAnswers = 0;
@@ -41,10 +41,9 @@ export const submitquiz = async (req, res) => {
 
     for (let i = 0; i < totalQuestions; i++) {
       const correctAnswer = quiz.questions[i].correctAnswer;
-      const userAnswer = answers[i];
-
+      const userAnswer = Number(answersArray[i]);
+      // console.log(correctAnswer,userAnswer)
       if (correctAnswer === userAnswer) {
-        score++;
         correctAnswers++;
       }
     }
@@ -53,7 +52,7 @@ export const submitquiz = async (req, res) => {
     const userId = req.user.id; // Assuming you have authentication middleware
     const performance = {
       quizId: quiz._id,
-      score,
+      score:(correctAnswers/totalQuestions*100),
       correctAnswers,
       totalQuestions,
       dateTaken: new Date()
