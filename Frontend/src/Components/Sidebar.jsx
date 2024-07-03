@@ -30,14 +30,14 @@ function Sidebar() {
                     <div className='mt-4'><h1 className='text-xl font-bold'>{`${loggedinUser?.firstName} ${loggedinUser?.lastName}(You)`}</h1></div>
             </div>
             <div><hr className='w-[25vw] mt-2'></hr></div>
-            <div className='h-8 pt-2 text-lg mt-14'>Dashboard</div>
+            <div className='h-8 pt-2 text-lg mt-14'><Link to="/dashboard">Dashboard</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
             <div><hr className='w-[25vw]'></hr></div>
             <div className='h-10 pt-4 text-lg'><Link to="/create-quiz">Create a Quiz</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
             <div className='h-10 pt-4 text-lg'><Link to="/quizzes">View all Quizzes</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
-            <div className='h-10 pt-4 text-lg' onClick={logoutFunction}>Logout</div>
+            <div className='h-10 pt-4 text-lg cursor-pointer' onClick={logoutFunction}>Logout</div>
             <div><hr className='w-[25vw]'></hr></div>
             
         </div>
