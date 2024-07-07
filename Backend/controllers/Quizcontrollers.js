@@ -34,7 +34,7 @@ export const submitquiz = async (req, res) => {
       return res.status(404).json({ error: 'Quiz not found' });
     }
     const answersArray=Object.values(answers)
-    // Calculate score and correct answers
+
     let score = 0;
     let correctAnswers = 0;
     let totalQuestions = quiz.questions.length;

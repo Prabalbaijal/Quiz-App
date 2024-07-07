@@ -43,7 +43,7 @@ const Dashboard = () => {
   }, []);
 
   const labels = quizzesTaken.map((quiz, index) => `Quiz ${index + 1}`);
-  const scores = quizzesTaken.map(quiz => (quiz.score / 100).toFixed(2));  // Convert scores to percentage format
+  const scores = quizzesTaken.map(quiz => (quiz.score / 100).toFixed(2));
 
   const data = {
     labels: labels,
@@ -51,10 +51,10 @@ const Dashboard = () => {
       {
         label: 'Scores',
         data: scores,
-        fill: true,  // This fills the area under the line
-        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color of the filled area
-        borderColor: 'rgba(255, 99, 132, 1)', // Color of the line
-        tension: 0.4,  // This makes the line curved
+        fill: true,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        tension: 0.4,
       },
     ],
   };
@@ -64,8 +64,8 @@ const Dashboard = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: function(value) {
-            return (value * 100) + '%';  // Convert ticks to percentage format
+          callback: function (value) {
+            return (value * 100) + '%';
           },
         },
       },
@@ -73,10 +73,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='flex pr-4'>
+    <div className='flex items-center pr-4 max-sm:flex-col max-md:flex-col max-lg:flex-row sm:gap-4'>
       <Sidebar />
-      <div className='flex w-[40vw] justify-center'>
-        <div className='flex flex-col items-center justify-center h-[90vh] overflow-auto'>
+      <div className='flex max-lg:w-[40vw] justify-center max-md:w-screen'>
+        <div className='flex flex-col items-center overflow-auto max-lg:h-[90vh] max-md:w-screen'>
           <h2 className='mb-4 text-2xl font-bold'>Dashboard</h2>
           <table className='min-w-full divide-y divide-gray-200'>
             <thead className='bg-gray-50'>
@@ -98,8 +98,9 @@ const Dashboard = () => {
           </table>
         </div>
       </div>
-      <div className='w-[40vw] ml-0 flex items-center'>
-        <Line data={data} options={options}/>
+      <div className='flex flex-col items-center justify-center gap-3 ml-0 w-[40vw] '>
+        <Line data={data} options={options} />
+        <h1>Your Performance</h1>
       </div>
     </div>
   );

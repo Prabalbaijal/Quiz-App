@@ -20,7 +20,7 @@ function Sidebar() {
         }
       }
     return (
-        <div className='gap-0 flex flex-col w-[25vw] bg-gray-300 h-screen items-center border-4'>
+        <div className='gap-0 flex flex-col max-lg:w-[25vw] bg-gray-300 md:h-screen items-center border-4 sm:h-fit sm:p-2 max-md:w-screen'>
             <div className='flex flex-col items-center w-full bg-gray-300'>
                     <div className="mt-32 avatar">
                         <div className="w-24 rounded-full">
@@ -33,7 +33,7 @@ function Sidebar() {
             <div className='h-8 pt-2 text-lg mt-14'><Link to="/dashboard">Dashboard</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
             <div><hr className='w-[25vw]'></hr></div>
-            <div className='h-10 pt-4 text-lg'><Link to="/create-quiz">Create a Quiz</Link></div>
+            <div className='h-10 pt-4 text-lg'><Link to="/create-quiz">Create and Post Quiz</Link></div>
             <div><hr className='w-[25vw]'></hr></div>
             <div className='h-10 pt-4 text-lg'><Link to="/quizzes">View all Quizzes</Link></div>
             <div><hr className='w-[25vw]'></hr></div>

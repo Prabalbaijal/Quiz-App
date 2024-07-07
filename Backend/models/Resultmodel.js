@@ -9,4 +9,5 @@ const ResultSchema = new mongoose.Schema({
   dateTaken: { type: Date, default: Date.now },
 });
 
+
 export const Result = mongoose.model('Result', ResultSchema);

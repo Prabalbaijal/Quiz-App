@@ -71,7 +71,7 @@
       } catch (error) {
         toast.error(error.response.data.message);
         console.error(error);
-        setIsDisabled(false); // Reset disabled state on error
+        setIsDisabled(false);
       }
     };
   
@@ -176,11 +176,11 @@
                       <li key={i}>Option {i+1}: {choice}</li>
                     ))}
                   </ul>
-                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer}</p>
+                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer+1}</p>
                 </li>
               ))}
             </ul>
-            <div className='flex justify-center mb-4'><button onClick={handleSaveQuiz} className=' btn btn-active'>Save Quiz</button></div>
+            <div className='flex justify-center mb-4'><button onClick={handleSaveQuiz} className=' btn btn-active'>Save and Post Quiz</button></div>
           </div>
         )}
 
