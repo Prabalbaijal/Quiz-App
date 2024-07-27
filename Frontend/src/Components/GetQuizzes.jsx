@@ -45,7 +45,7 @@ function GetQuizzes() {
   return (
     <div className='flex h-screen'>
       <Sidebar />
-      <div className='w-[75vw] p-4 overflow-auto'>
+      <div className='w-[80vw] p-4 overflow-auto'>
         <h1 className='mb-6 text-4xl'>All Quizzes</h1>
         <div className='mb-4'>
           <label htmlFor='category' className='mr-2 text-lg'>Filter by Category:</label>

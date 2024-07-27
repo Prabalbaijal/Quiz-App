@@ -73,34 +73,38 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='flex items-center pr-4 max-sm:flex-col max-md:flex-col max-lg:flex-row sm:gap-4'>
+    <div className='flex h-screen'>
       <Sidebar />
-      <div className='flex max-lg:w-[40vw] justify-center max-md:w-screen'>
-        <div className='flex flex-col items-center overflow-auto max-lg:h-[90vh] max-md:w-screen'>
-          <h2 className='mb-4 text-2xl font-bold'>Dashboard</h2>
-          <table className='min-w-full divide-y divide-gray-200'>
-            <thead className='bg-gray-50'>
-              <tr>
-                <th className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'>Quiz Title</th>
-                <th className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'>Score</th>
-                <th className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'>Date Taken</th>
-              </tr>
-            </thead>
-            <tbody className='bg-white divide-y divide-gray-200'>
-              {quizzesTaken.map((quiz, index) => (
-                <tr key={index}>
-                  <td className='px-6 py-4 whitespace-nowrap'>{quiz.quizTitle}</td>
-                  <td className='px-6 py-4 whitespace-nowrap'>{quiz.score}%</td>
-                  <td className='px-6 py-4 whitespace-nowrap'>{new Date(quiz.dateTaken).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className='flex flex-col w-full p-4'>
+        <h2 className='mb-4 text-2xl font-bold'>Dashboard</h2>
+        <div className='flex flex-col gap-4 lg:flex-row'>
+          <div className='flex-grow lg:w-1/2'>
+            <div className='overflow-y-auto max-h-[70vh]'>
+              <table className='min-w-full divide-y divide-gray-200'>
+                <thead className='bg-gray-50'>
+                  <tr>
+                    <th className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'>Quiz Title</th>
+                    <th className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'>Score</th>
+                    <th className='px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase'>Date Taken</th>
+                  </tr>
+                </thead>
+                <tbody className='bg-white divide-y divide-gray-200'>
+                  {quizzesTaken.map((quiz, index) => (
+                    <tr key={index}>
+                      <td className='px-6 py-4 whitespace-nowrap'>{quiz.quizTitle}</td>
+                      <td className='px-6 py-4 whitespace-nowrap'>{quiz.score}%</td>
+                      <td className='px-6 py-4 whitespace-nowrap'>{new Date(quiz.dateTaken).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className='flex flex-col items-center flex-grow lg:w-1/2'>
+            <Line data={data} options={options} />
+            <h1 className='mt-4 text-xl font-bold'>Your Performance</h1>
+          </div>
         </div>
-      </div>
-      <div className='flex flex-col items-center justify-center gap-3 ml-0 w-[40vw] '>
-        <Line data={data} options={options} />
-        <h1>Your Performance</h1>
       </div>
     </div>
   );

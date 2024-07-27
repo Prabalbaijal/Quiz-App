@@ -1,94 +1,94 @@
-  import React, { useState } from 'react';
-  import axios from 'axios';
-  import toast from 'react-hot-toast';
-  import Sidebar from './Sidebar';
-  import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import Sidebar from './Sidebar';
+import { useSelector } from 'react-redux';
 
-  function CreateQuiz() {
-    const { loggedinUser }=useSelector(store=>store.user)
-    const [title, setTitle] = useState('');
-    const [category, setCategory] = useState('');
-    const [question, setQuestion] = useState('');
-    const [choices, setChoices] = useState(['', '', '', '']);
-    const [correctAnswer, setCorrectAnswer] = useState(null);
-    const [questions, setQuestions] = useState([]);
-    const [quiz, setQuiz] = useState(null);
-    const [isDisabled, setIsDisabled] = useState(false);
+function CreateQuiz() {
+  const { loggedinUser } = useSelector(store => store.user)
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [question, setQuestion] = useState('');
+  const [choices, setChoices] = useState(['', '', '', '']);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [quiz, setQuiz] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
 
-    const categories = ['Math', 'Science', 'Technology', 'Sports', 'History'];
+  const categories = ['Math', 'Science', 'Technology', 'Sports', 'History'];
 
-    const handleAddQuestion = () => {
-      const newQuestion = {
-        question,
-        choices,
-        correctAnswer: correctAnswer
-      };
-
-      setQuestions([
-        ...questions,
-        newQuestion
-      ]);
-
-      // Reset the form for the next question
-      setQuestion('');
-      setChoices(['', '', '', '']);
-      setCorrectAnswer(null);
+  const handleAddQuestion = () => {
+    const newQuestion = {
+      question,
+      choices,
+      correctAnswer: correctAnswer
     };
-    const addAnother = () => {
-      setTitle('');
-      setCategory('');
+
+    setQuestions([
+      ...questions,
+      newQuestion
+    ]);
+
+    // Reset the form for the next question
+    setQuestion('');
+    setChoices(['', '', '', '']);
+    setCorrectAnswer(null);
+  };
+  const addAnother = () => {
+    setTitle('');
+    setCategory('');
+    setQuestions([]);
+    // Clear all the question-related state
+    setQuestion('');
+    setChoices(['', '', '', '']);
+    setCorrectAnswer(null);
+    setIsDisabled(false); // Reset disabled state for buttons
+    setQuiz(null); // Clear saved quiz
+  };
+
+  const handleSaveQuiz = async () => {
+    setIsDisabled(true);
+    const newQuiz = {
+      title,
+      category,
+      questions,
+      createdBy: loggedinUser._id
+    };
+
+    try {
+      await axios.post('http://localhost:9000/api/users/create-quiz', newQuiz, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      });
+      setQuiz(newQuiz);
+      toast.success("Quiz Added Successfully.")
       setQuestions([]);
-      // Clear all the question-related state
       setQuestion('');
       setChoices(['', '', '', '']);
       setCorrectAnswer(null);
-      setIsDisabled(false); // Reset disabled state for buttons
-      setQuiz(null); // Clear saved quiz
-    };
-      
-    const handleSaveQuiz = async () => {
-      setIsDisabled(true);
-      const newQuiz = {
-        title,
-        category,
-        questions,
-        createdBy: loggedinUser._id
-      };
-  
-      try {
-        await axios.post('http://localhost:9000/api/users/create-quiz', newQuiz, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          withCredentials: true
-        });
-        setQuiz(newQuiz);
-        toast.success("Quiz Added Successfully.")
-        setQuestions([]);
-        setQuestion('');
-        setChoices(['', '', '', '']);
-        setCorrectAnswer(null);
-      } catch (error) {
-        toast.error(error.response.data.message);
-        console.error(error);
-        setIsDisabled(false);
-      }
-    };
-  
+    } catch (error) {
+      toast.error(error.response.data.message);
+      console.error(error);
+      setIsDisabled(false);
+    }
+  };
 
-    const handleChoiceChange = (index, value) => {
-      const newChoices = [...choices];
-      newChoices[index] = value;
-      setChoices(newChoices);
-    };
 
-    const handleCorrectAnswerChange = (index) => {
-      setCorrectAnswer(index);
-    };
+  const handleChoiceChange = (index, value) => {
+    const newChoices = [...choices];
+    newChoices[index] = value;
+    setChoices(newChoices);
+  };
 
-    return (
-      <div className='flex'>
-      <Sidebar/>
+  const handleCorrectAnswerChange = (index) => {
+    setCorrectAnswer(index);
+  };
+
+  return (
+    <div className='flex'>
+      <Sidebar />
       <div className="App">
         <div className='flex-col w-[75vw] items-center text-center mt-10'>
           <div className=''><h1 className='text-4xl'>Create Quiz</h1></div>
@@ -141,7 +141,7 @@
                   <div key={index} className=''>
                     <label>
                       <input
-                      className='checkbox checkbox-success'
+                        className='checkbox checkbox-success'
                         type="checkbox"
                         checked={correctAnswer === index}
                         onChange={() => handleCorrectAnswerChange(index)}
@@ -150,7 +150,7 @@
                     <input
                       className='max-w-xs mt-2 ml-3 bg-white border-black input input-bordered'
                       type="text"
-                      placeholder={`Option ${index+1}`}
+                      placeholder={`Option ${index + 1}`}
                       value={choice}
                       onChange={(e) => handleChoiceChange(index, e.target.value)}
                     />
@@ -158,7 +158,7 @@
                 ))}
               </div>
               <div className='flex justify-end'>
-              <button onClick={handleAddQuestion} className='mt-4 btn btn-active'>Save Question</button>
+                <button onClick={handleAddQuestion} className='mt-4 btn btn-active'>Save Question</button>
               </div>
             </div>
           </dialog>
@@ -173,10 +173,10 @@
                   <span className='w-auto p-1 mb-1 font-bold bg-gray-300 rounded-lg'>Question: {q.question}</span>
                   <ul>
                     {q.choices.map((choice, i) => (
-                      <li key={i}>Option {i+1}: {choice}</li>
+                      <li key={i}>Option {i + 1}: {choice}</li>
                     ))}
                   </ul>
-                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer+1}</p>
+                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer + 1}</p>
                 </li>
               ))}
             </ul>
@@ -191,13 +191,13 @@
             <ul>
               {quiz.questions.map((q, index) => (
                 <li key={index}>
-                  <span className='w-auto p-1 mb-1 font-bold bg-gray-300 rounded-lg'>Question {index+1}: {q.question}</span>
+                  <span className='w-auto p-1 mb-1 font-bold bg-gray-300 rounded-lg'>Question {index + 1}: {q.question}</span>
                   <ul>
                     {q.choices.map((choice, i) => (
-                      <li key={i}>Option {i+1}: {choice}</li>
+                      <li key={i}>Option {i + 1}: {choice}</li>
                     ))}
                   </ul>
-                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer+1}</p>
+                  <p><strong>Correct Answer:</strong> Option {q.correctAnswer + 1}</p>
                 </li>
               ))}
             </ul>
@@ -205,8 +205,8 @@
           </div>
         )}
       </div>
-      </div>
-    );
-  }
+    </div>
+  );
+}
 
-  export default CreateQuiz
+export default CreateQuiz

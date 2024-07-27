@@ -46,17 +46,9 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  avatar: {
-    type: Object,
-    required: false,
-    contains: {
-      url: {
-        type: String,
-      },
-      publicId: {
-        type: String,
-      },
-    },
+  profilePicture:{
+    type:String,
+    required:true
   },
   deleted: {
     type: Boolean,
